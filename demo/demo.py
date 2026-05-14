@@ -89,7 +89,7 @@ def main(model_path: str) -> None:
         model = load_model(model_path)
     except FileNotFoundError:
         print(f"❌  Model file not found: {model_path}")
-        print("    Run `python src/train.py` first to generate a model.")
+        print("    Run `python src/train.py` or `python src/baseline.py` first to generate a model.")
         sys.exit(1)
 
     while True:
@@ -110,7 +110,14 @@ def main(model_path: str) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Interactive car-price demo.")
-    parser.add_argument("--model", default="models/best_model.pkl",
+    parser.add_argument("--model", default=None,
                         help="Path to trained model pickle")
+    parser.add_argument("--baseline", action="store_true",
+                        help="Use the baseline model (models/best_baseline.pkl) instead of the main model")
     args = parser.parse_args()
-    main(args.model)
+    
+    model_path = args.model
+    if not model_path:
+        model_path = "models/best_baseline.pkl" if args.baseline else "models/best_model.pkl"
+        
+    main(model_path)
